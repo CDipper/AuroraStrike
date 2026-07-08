@@ -240,14 +240,11 @@ if __name__ == "__main__":
         listener_manager.request_stop()
         operator_server.handle_exit(sig, frame)
 
-    _loop = asyncio.get_event_loop()
     try:
         for sig in (signal.SIGINT, signal.SIGTERM):
-            _loop.add_signal_handler(sig, _handle_exit, sig, None)
-    except NotImplementedError:
-        # Windows
-        for sig in (signal.SIGINT, signal.SIGTERM):
             signal.signal(sig, _handle_exit)
+    except (ValueError, OSError):
+        pass  # Not in main thread or unsupported signal
 
     async def _run():
         await listener_manager.start()
