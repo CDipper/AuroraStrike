@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURORA C2</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="login-view" class="login-view">
+    <div class="login-card">
+        <div class="login-logo">AURORA<span>C2</span></div>
+        <p class="login-subtitle">Command &amp; Control Framework</p>
+        <form id="login-form">
+            <input type="text" id="login-user" placeholder="Username" autocomplete="off" required>
+            <input type="password" id="login-pass" placeholder="Password" autocomplete="off" required>
+            <button type="submit">LOGIN</button>
+        </form>
+        <div id="login-error" class="login-error"></div>
+    </div>
+</div>
+
+<!-- ═══ MAIN UI ═══ -->
+<div id="main-view" class="main-view hidden">
+    <header class="topbar">
+        <div class="topbar-left">
+            <span class="brand">AURORA<span>C2</span></span>
+            <div class="listener-menu">
+                <button id="btn-listener-menu" class="listener-menu-btn">LISTENER</button>
+                <div id="listener-dropdown" class="listener-dropdown hidden">
+                    <div class="listener-dropdown-head">
+                        <span>LISTENERS</span>
+                        <button id="btn-add-listener" class="btn-sm">add</button>
+                    </div>
+                    <div id="listener-list" class="listener-list"></div>
+                    <form id="listener-form" class="listener-form hidden">
+                        <input id="listener-name" placeholder="display name" autocomplete="off" required>
+                        <input id="listener-bind-host" placeholder="bind host / Team Server listen IP" value="0.0.0.0" autocomplete="off">
+                        <input id="listener-bind-port" placeholder="bind port / Team Server listen port" type="number" min="1" max="65535" value="8443">
+                        <input id="listener-public-host" placeholder="public host / Beacon SERVER_HOST" value="127.0.0.1" autocomplete="off">
+                        <input id="listener-public-port" placeholder="public port / Beacon SERVER_PORT" type="number" min="1" max="65535" value="8443">
+                        <div class="listener-actions">
+                            <button type="submit" class="btn-sm">save</button>
+                            <button type="button" id="btn-reload-listeners" class="btn-sm">reload</button>
+                            <button type="button" id="btn-delete-listener" class="btn-sm">delete</button>
+                            <button type="button" id="btn-cancel-listener" class="btn-sm">cancel</button>
+                        </div>
+                    </form>
+                    <div id="listener-status" class="listener-hint">After changing bind host/port, click reload to rebind listeners without restarting Team Server.</div>
+                </div>
+            </div>
+            <div class="listener-menu">
+                <button id="btn-payload-menu" class="listener-menu-btn">PAYLOAD</button>
+                <div id="payload-dropdown" class="listener-dropdown hidden">
+                    <div class="listener-dropdown-head">
+                        <span>PAYLOAD GENERATOR</span>
+                    </div>
+                    <div id="payload-form" class="payload-form">
+                        <label class="payload-label">Listener</label>
+                        <select id="payload-listener" class="payload-select"></select>
+                        <label class="payload-label">Sleep (seconds)</label>
+                        <input id="payload-sleep" type="number" min="1" max="3600" value="5" class="payload-input">
+                        <label class="payload-label">Jitter (%)</label>
+                        <input id="payload-jitter" type="number" min="0" max="100" value="20" class="payload-input">
+                        <div id="payload-status" class="payload-status"></div>
+                        <button id="btn-generate-payload" class="payload-generate-btn">Generate Beacon EXE</button>
+                    </div>
+                    <div id="payload-info" class="payload-info"></div>
+                </div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <span id="op-name" class="op-name"></span>
+            <button id="btn-logout" class="btn-sm">Logout</button>
+        </div>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BEACONS</h3>
+                <button id="btn-refresh" class="btn-sm">&#8635;</button>
+            </div>
+            <div id="beacon-list" class="beacon-list"></div>
+        </aside>
+
+        <main class="content">
+            <div id="empty-view" class="empty-view">
+                <div class="empty-icon">&#8981;</div>
+                <p>Select a beacon from the sidebar</p>
+                <p class="empty-hint">or deploy an implant to get started</p>
+            </div>
+
+            <div id="beacon-view" class="beacon-view hidden">
+                <div class="info-bar">
+                    <div class="info-item">
+                        <span class="info-label">ID</span>
+                        <span id="info-id" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">HOST</span>
+                        <span id="info-host" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">USER</span>
+                        <span id="info-user" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">OS</span>
+                        <span id="info-os" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">EXTERNAL</span>
+                        <span id="info-external-ip" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">INTERNAL</span>
+                        <span id="info-internal-ip" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">LISTENER</span>
+                        <span id="info-listener" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">STATUS</span>
+                        <span id="info-status" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">LAST SEEN</span>
+                        <span id="info-seen" class="info-value"></span>
+                    </div>
+                </div>
+
+                <div class="quick-actions extension-actions">
+                    <button class="btn-cmd" id="btn-open-files">filebrowser</button>
+                    <button class="btn-cmd" id="btn-open-procs">process list</button>
+                </div>
+            </div>
+
+            <div class="workspace">
+                    <div class="window-tabs">
+                        <button class="window-tab active" id="tab-console" data-pane="console">Beacon Console</button>
+                        <button class="window-tab" id="tab-events" data-pane="events">Events</button>
+                        <button class="window-tab hidden" id="tab-files" data-pane="files">File Browser <span class="tab-close" data-close="files">x</span></button>
+                        <button class="window-tab hidden" id="tab-procs" data-pane="procs">Process List <span class="tab-close" data-close="procs">x</span></button>
+                    </div>
+
+                    <div class="workspace-pane" id="pane-console">
+                        <div class="console-wrap">
+                            <div id="console-output" class="console-output"></div>
+                            <div class="console-input-row">
+                                <span class="console-prompt" id="console-prompt">Beacon &gt;</span>
+                                <input type="text" id="console-input" class="console-input"
+                                       placeholder="shell <cmd> | ls | cd | pwd | upload <local> <remote> | download <remote> | mkdir | drives | rm | cp | mv | setenv | portscan <host> <ports> | sleep <sec> <jitter> | ps | kill <pid> | whoami | inline-execute <path> [args]"
+                                       autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="latin" lang="en">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="workspace-pane hidden" id="pane-events">
+                        <div class="event-browser">
+                            <div class="event-bar">
+                                <span class="fb-title">EVENTS</span>
+                                <button id="btn-clear-events" class="btn-sm">clear</button>
+                            </div>
+                            <div id="event-log" class="event-log"></div>
+                        </div>
+                    </div>
+
+                    <div class="workspace-pane hidden" id="pane-files">
+                        <div class="file-browser">
+                            <div class="fb-bar">
+                                <input type="text" id="fb-path" class="fb-path" value="." autocomplete="off" spellcheck="false">
+                                <button id="fb-refresh" class="btn-sm">list</button>
+                                <button id="fb-up" class="btn-sm">up</button>
+                                <button id="fb-mkdir" class="btn-sm">mkdir</button>
+                                <button id="fb-upload" class="btn-sm">upload</button>
+                                <input type="file" id="fb-local-file" class="hidden">
+                                <button id="fb-download" class="btn-sm">download</button>
+                                <button id="fb-rm" class="btn-sm">delete</button>
+                            </div>
+                            <div class="fb-tip">Tip: filebrowser upload uses Teamserver memory buffering and may take longer for large files. For large uploads, prefer using the Beacon Console upload command.</div>
+                            <div id="fb-list" class="fb-list"></div>
+                        </div>
+                    </div>
+
+                    <div class="workspace-pane hidden" id="pane-procs">
+                        <div class="proc-browser">
+                            <div class="fb-bar">
+                                <button id="pb-refresh" class="btn-sm">refresh</button>
+                                <button id="pb-kill" class="btn-sm">kill</button>
+                                <input type="text" id="pb-filter" class="fb-path" placeholder="filter by name..." autocomplete="off" spellcheck="false">
+                            </div>
+                            <div id="pb-list" class="fb-list"></div>
+                        </div>
+                    </div>
+                </div>
+        </main>
+    </div>
+</div>
+
+<script src="/static/config.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pycryptodome==3.21.0
+bcrypt==4.2.1
+PyJWT==2.10.1
+websockets==14.1
+pyfiglet==1.0.2
