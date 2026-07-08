@@ -42,7 +42,7 @@ http://127.0.0.1:5001
 
 Team Server 运行两个端口：
 - **操作员端口**（默认 5001，仅本地）— Web UI、REST API、WebSocket
-- **Listener 端口**（默认 8443，来自 listener 配置）— 仅 Beacon 回连，可在 WebUI 的 LISTENERS 中修改（修改后需重启 Team Server）
+- **Listener 端口**（默认 8443，来自 listener 配置）— 仅 Beacon 回连，可在 WebUI 的 LISTENERS 中修改（修改后 reload 即可生效，无需重启 Team Server）
 
 默认登录（建议在profile中修改一下）：
 

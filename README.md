@@ -44,7 +44,7 @@ http://127.0.0.1:5001
 
 The Team Server runs two ports:
 - **Operator port** (default `5001`, localhost only) — Web UI, REST API, WebSocket
-- **Listener port** (default `8443`, from listener configuration) — Beacon callback only; can be changed in the Web UI `LISTENERS` panel (reload/rebind after changing)
+- **Listener port** (default `8443`, from listener configuration) — Beacon callback only; can be changed in the Web UI `LISTENERS` panel (reload to apply, no restart needed)
 
 Default login (recommended to change in the profile):
 
